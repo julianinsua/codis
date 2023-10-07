@@ -1,0 +1,13 @@
+html
+	head
+		title Codis
+		meta[charset="UTF-8"]
+		meta[name="viewport"][content="width=device-width, initial-scale=1"]
+		link[href="/static/output.css"][rel="stylesheet"]
+	body
+		import components/header
+
+		block content
+			| p 404 not found
+			
+		import components/footer
