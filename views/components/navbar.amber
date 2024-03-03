@@ -1,0 +1,35 @@
+nav
+	.w-max
+	.py-3
+	.px-8
+	.border
+	.border-solid
+	.border-dark
+	.rounded-full
+	.font-medium
+	.capitalize
+	.flex
+	.font-medium
+	.capitalize
+	.flex
+	.font-medium
+	.capitalize
+	.items-center
+	.gap-3
+	.fixed
+	.top-6
+	.backdrop-blur-sm
+	[class="right-1/2 translate-x-1/2 bg-light/80"]
+	a
+		[href="/home"]
+		| home
+	a
+		[href="/content"]
+		| content
+	a
+		[href="/contact"]
+		| Contact
+	button 
+		img
+			[src="/static/assets/sun.svg"]
+			[alt="light theme switcher"]

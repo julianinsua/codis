@@ -3,6 +3,10 @@ module.exports = {
   content: ["./views/**/*.{html,js,amber}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Inter"'],
+        display: ['"Manrope"']
+      },
       colors: {
         dark: "#1B1B1B",
         light: "#FFF",

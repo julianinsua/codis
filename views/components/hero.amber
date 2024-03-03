@@ -1,0 +1,5 @@
+section
+	img
+		.w-full
+		[src="static/assets/golangCode.png"]
+

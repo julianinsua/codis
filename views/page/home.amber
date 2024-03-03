@@ -1,4 +1,5 @@
 extends ../master
 
 block content
-	p.font-bold pepito
+	import ../components/hero
+

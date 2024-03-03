@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/julianinsua/codis/api"
 	database "github.com/julianinsua/codis/database"
+	"github.com/julianinsua/codis/http"
 	_ "github.com/lib/pq"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	}
 
 	store := database.NewStore(db)
-	server := api.NewServer(store)
+	server := http.NewServer(store)
 	fmt.Println("Just a beautifull day in the server")
 	server.Start()
 

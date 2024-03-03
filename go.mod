@@ -9,3 +9,8 @@ require (
 	github.com/google/uuid v1.3.1
 	github.com/lib/pq v1.10.9
 )
+
+require (
+	github.com/yuin/goldmark v1.7.0 // indirect
+	go.abhg.dev/goldmark/wikilink v0.5.0 // indirect
+)

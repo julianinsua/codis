@@ -1,13 +1,33 @@
+!!! 5
 html
 	head
 		title Codis
 		meta[charset="UTF-8"]
 		meta[name="viewport"][content="width=device-width, initial-scale=1"]
 		link[href="/static/output.css"][rel="stylesheet"]
+		link[href="/static/mdStyles.css"][rel="stylesheet"]
+		link[rel="preconnect"][href="https://fonts.googleapis.com"]
+		link [rel="preconnect"][href="https://fonts.gstatic.com"][crossorigin=true]
+		link[href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"][rel="stylesheet"] 
+		link[href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"][rel="stylesheet"] 
 	body
-		import components/header
+		.font-sans
+		.bg-light
+		[class="dark:bg-dark"]
 
-		block content
-			| p 404 not found
-			
-		import components/footer
+		main
+			.flex
+			.flex-col
+			.items-center
+			.justify-center
+			.h-screen
+
+			import components/header
+
+			div
+				.master__content
+
+				block content
+					| p 404 not found
+				
+			import components/footer

@@ -1,2 +1,13 @@
-div
-	| header
+header
+	.w-full
+	.p-4
+	.px-10
+	.flex
+	.items-center
+	.justify-between
+		
+		import logo
+
+		import navbar
+		
+		import socialbar

@@ -1,0 +1,37 @@
+div
+	.flex
+	.gap-3
+	a
+		[href="https://www.linkedin.com/in/julian-insua/"]
+		[target="__blank"]
+		[rel="noreferrer"]
+		img
+			.transition-all
+			.ease
+			.duration-200
+			[class="hover:scale-110"]
+			[src="/static/assets/linkedin.svg"]
+			[alt="linkedin"]
+	a
+		[href="http://github.com/julianinsua"]
+		[target="__blank"]
+		[rel="noreferrer"]
+		img
+			.transition-all
+			.ease
+			.duration-200
+			[class="hover:scale-110"]
+			[src="/static/assets/github.svg"]
+			[alt="github"]
+	a
+		[href="http://twitter.com/thejulianinsua"]
+		[target="__blank"]
+		[rel="noreferrer"]
+		img
+			.transition-all
+			.ease
+			.duration-200
+			[class="hover:scale-110"]
+			[src="/static/assets/twitter.svg"]
+			[alt="twitter"]
+
