@@ -5,7 +5,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['"Inter"'],
-        display: ['"Manrope"']
+        display: ['"Manrope"'],
+        body: ['"Noto Sans"'],
       },
       colors: {
         dark: "#1B1B1B",
@@ -13,9 +14,8 @@ module.exports = {
         accent: "#7B00D3",
         accentDark: "#FFDB4D",
         gray: "#747474",
-      }
+      },
     },
   },
   plugins: [],
-}
-
+};

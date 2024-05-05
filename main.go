@@ -7,6 +7,8 @@ import (
 
 	database "github.com/julianinsua/codis/database"
 	"github.com/julianinsua/codis/http"
+	"github.com/julianinsua/codis/util"
+
 	_ "github.com/lib/pq"
 )
 
@@ -16,14 +18,19 @@ const (
 )
 
 func main() {
-	db, err := sql.Open(DB_SOURCE, DB_URL)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("failed to log config file: ", err)
+	}
+
+	db, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	store := database.NewStore(db)
-	server := http.NewServer(store)
-	fmt.Println("Just a beautifull day in the server")
+	parser := http.NewMdParser()
+	server := http.NewServer(store, parser, config)
+	fmt.Println("Just another beautifull day in the server")
 	server.Start()
-
 }

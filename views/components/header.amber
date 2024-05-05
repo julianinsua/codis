@@ -6,8 +6,9 @@ header
 	.items-center
 	.justify-between
 		
-		import logo
+		import nbsp_logo
 
 		import navbar
 		
 		import socialbar
+

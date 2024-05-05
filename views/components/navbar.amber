@@ -6,20 +6,18 @@ nav
 	.border-solid
 	.border-dark
 	.rounded-full
-	.font-medium
 	.capitalize
 	.flex
 	.font-medium
 	.capitalize
 	.flex
-	.font-medium
-	.capitalize
 	.items-center
 	.gap-3
 	.fixed
 	.top-6
 	.backdrop-blur-sm
-	[class="right-1/2 translate-x-1/2 bg-light/80"]
+	.z-50
+	[class="right-1/2 translate-x-1/2 bg-light/80 dark:bg-dark/20 dark:text-white"]
 	a
 		[href="/home"]
 		| home

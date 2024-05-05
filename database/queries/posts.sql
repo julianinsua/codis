@@ -2,9 +2,9 @@
 INSERT INTO posts (
 	title,
 	description,
-	category_id,
-	path,
-	status
+	status,
+	user_id,
+	path
 ) VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
@@ -14,9 +14,6 @@ SELECT * FROM posts WHERE status=$1;
 -- name: GetPost :one
 SELECT * FROM posts WHERE id=$1 LIMIT 1;
 
--- name: GetCategoryPosts :many
-SELECT * FROM posts WHERE category_id=$1;
-
 -- name: GetTagPosts :many
 SELECT * FROM posts P
 WHERE EXISTS (
@@ -24,3 +21,7 @@ WHERE EXISTS (
 	WHERE P.id = PT.post_id 
 		AND PT.tag_id = $1
 ); -- need to add ordering
+
+-- name: GetPostsWithTags :many
+SELECT * FROM posts_view WHERE user_id=$1;
+

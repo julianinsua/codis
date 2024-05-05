@@ -6,14 +6,20 @@ import (
 	"log"
 	"net/http"
 
+	katex "github.com/FurqanSoftware/goldmark-katex"
+	callout "github.com/VojtaStruhar/goldmark-obsidian-callout"
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/eknkc/amber"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	db "github.com/julianinsua/codis/database"
+	"github.com/julianinsua/codis/util"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
+	"go.abhg.dev/goldmark/mermaid"
 	"go.abhg.dev/goldmark/wikilink"
 )
 
@@ -25,7 +31,9 @@ type Server struct {
 	store     *db.Store
 	router    chi.Router
 	templates map[string]*template.Template
-	mdParser  mdConverter
+	mdParser  MdConverter
+	files     util.FileManager
+	config    util.Config
 }
 
 func (srv *Server) Start() {
@@ -48,7 +56,7 @@ func (srv *Server) Start() {
 
 func (srv *Server) setCORSHeaders() {
 	srv.router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*s"},
+		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		ExposedHeaders:   []string{"Link"},
@@ -61,6 +69,7 @@ func (srv *Server) setRoutes() {
 	srv.router.Get("/home", srv.handleHome)
 	srv.router.Get("/content", srv.handleArticleList)
 	srv.router.Get("/content/{articleName}", srv.handleArticle)
+	srv.router.Post("/content", srv.handleCreateArticle)
 }
 
 func (srv *Server) compileTemplates() {
@@ -68,7 +77,6 @@ func (srv *Server) compileTemplates() {
 		Ext:       ".amber",
 		Recursive: true,
 	}, amber.Options{})
-
 	if err != nil {
 		log.Fatal("can't compile templates", err)
 	}
@@ -80,13 +88,13 @@ func (srv *Server) serveStaticContent() {
 	srv.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(store *db.Store, mdParser MdConverter, config util.Config) *Server {
 	router := chi.NewRouter()
-	mdParser := NewMdParser()
-	return &Server{router: router, store: store, mdParser: mdParser}
+
+	return &Server{router: router, store: store, mdParser: mdParser, config: config}
 }
 
-type mdConverter interface {
+type MdConverter interface {
 	Convert([]byte) (template.HTML, error)
 }
 
@@ -96,7 +104,19 @@ type MdParser struct {
 func (mdp MdParser) Convert(mdFile []byte) (template.HTML, error) {
 	var buffer bytes.Buffer
 	err := goldmark.New(
-		goldmark.WithExtensions(extension.GFM, &wikilink.Extender{}),
+		goldmark.WithExtensions(
+			extension.GFM,
+			&wikilink.Extender{},
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("catppuccin-mocha"),
+				highlighting.WithFormatOptions(
+					chromahtml.WithLineNumbers(true),
+				),
+			),
+			&mermaid.Extender{},
+			&katex.Extender{},
+			callout.ObsidianCallout,
+		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 		),
@@ -105,12 +125,13 @@ func (mdp MdParser) Convert(mdFile []byte) (template.HTML, error) {
 			html.WithXHTML(),
 		),
 	).Convert(mdFile, &buffer)
+
 	if err != nil {
 		return template.HTML(""), err
 	}
 	return template.HTML(buffer.String()), nil
 }
 
-func NewMdParser() mdConverter {
+func NewMdParser() MdConverter {
 	return MdParser{}
 }

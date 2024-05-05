@@ -1,0 +1,17 @@
+a
+	.items-center
+	[href="/home"]
+	h1
+		.flex
+		.font-body
+		.font-bold
+		.text-6xl
+		.relative
+		[class="dark:text-gray"]
+		span
+			|&
+			.text-gray
+			[class="dark:text-white"]
+			.relative
+			[class="left-[15px]"]
+		| nbsp

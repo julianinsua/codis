@@ -1,0 +1,110 @@
+@media (prefers-color-scheme: dark) {
+  .base {
+    --radius: 20rem;
+    fill: none;
+    stroke: gray;
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .base {
+    --radius: 20rem;
+    fill: none;
+    stroke: black;
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+}
+
+/*rad units are 90deg/8 = 11,25deg
+one rad unit in length is 11,25/360*2*PI.r
+*/
+.one {
+  stroke-width: 1rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    5 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    -6 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*6 rad units*/
+}
+
+.two {
+  --radius: calc(20rem + 1rem + 8px);
+  stroke-width: 2rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    5 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    -4 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}
+
+.three {
+  --radius: calc(20rem + 1rem + 8px + 3rem + 1px);
+  stroke-width: 4rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    7 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    -1 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}
+
+.four {
+  --radius: calc(20rem + 1rem + 8px + 3rem + 1px + 6rem + 1px);
+  stroke-width: 8rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    24 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    0 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}
+
+.five {
+  --radius: calc(20rem + 1rem + 8px + 3rem + 1px + 6rem + 1px + 12rem + 1px);
+  stroke-width: 16rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    25 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    -1 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}
+
+.six {
+  --radius: calc(
+    20rem + 1rem + 8px + 3rem + 1px + 6rem + 1px + 12rem + 1px + 24rem + 1px
+  );
+  stroke-width: 32rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    22 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    3 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}
+
+.seven {
+  --radius: calc(
+    20rem + 1rem + 8px + 3rem + 1px + 6rem + 1px + 12rem + 1px + 24rem + 1px +
+      48rem + 1px
+  );
+  stroke-width: 64rem;
+  r: var(--radius);
+  stroke-dasharray: calc(
+    24 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*5 rad units*/
+  stroke-dashoffset: calc(
+    1 * 11.25 / 360 * 2 * 3.14159 * var(--radius)
+  ); /*4 rad units*/
+}

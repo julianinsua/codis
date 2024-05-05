@@ -1,4 +1,7 @@
 extends ../master
 
 block content
-	#{Content}
+	
+	div
+		.master__content
+			#{Content}
