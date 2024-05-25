@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -6,29 +6,33 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	dbi "github.com/julianinsua/codis/internal/database"
 )
 
-type Store struct {
-	*dbi.Queries
+type Store interface {
+	Querier
+	CreatePostTx(ctx context.Context, params CreatePostTxParams) (result CreatePostTxResult, err error)
+}
+
+type SQLStore struct {
+	*Queries
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) *SQLStore {
+	return &SQLStore{
 		db:      db,
-		Queries: dbi.New(db),
+		Queries: New(db),
 	}
 }
 
-func (st *Store) execTx(ctx context.Context, fn func(q *dbi.Queries) error) error {
+func (st *SQLStore) execTx(ctx context.Context, fn func(q *Queries) error) error {
 	tx, err := st.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
 	// Create a new instance of the database code inside using the transaction pointer instead of a database
-	q := dbi.New(tx)
+	q := New(tx)
 	err = fn(q)
 	if err != nil {
 		rbErr := tx.Rollback()
@@ -50,14 +54,14 @@ type CreatePostTxParams struct {
 }
 
 type CreatePostTxResult struct {
-	Post dbi.Post
-	Tags []dbi.Tag
+	Post Post
+	Tags []Tag
 }
 
-func (st Store) CreatePostTx(ctx context.Context, params CreatePostTxParams) (result CreatePostTxResult, err error) {
-	err = st.execTx(ctx, func(q *dbi.Queries) error {
+func (st SQLStore) CreatePostTx(ctx context.Context, params CreatePostTxParams) (result CreatePostTxResult, err error) {
+	err = st.execTx(ctx, func(q *Queries) error {
 		// Create the post
-		result.Post, err = q.CreatePost(ctx, dbi.CreatePostParams{
+		result.Post, err = q.CreatePost(ctx, CreatePostParams{
 			Title:       params.Title,
 			Description: params.Description,
 			Status:      sql.NullString{},
@@ -70,20 +74,29 @@ func (st Store) CreatePostTx(ctx context.Context, params CreatePostTxParams) (re
 		}
 
 		for _, tag := range params.TagNames {
-			// TODO: Check if tag exists
-
-			// If it doesn't, create it
-			dbTag, err := q.CreateTag(ctx, dbi.CreateTagParams{
-				Name:   tag,
+			userTagExistParams := UserTagExistsParams{
 				UserID: params.UserID,
-			})
-			if err != nil {
-				return err
+				Name:   tag,
 			}
-			result.Tags = append(result.Tags, dbTag)
+			var dbTag Tag
+			dbTag, err := q.UserTagExists(ctx, userTagExistParams)
+			if err != nil {
+				if err != sql.ErrNoRows {
+					return err
+				}
+
+				dbTag, err = q.CreateTag(ctx, CreateTagParams{
+					Name:   tag,
+					UserID: params.UserID,
+				})
+				if err != nil {
+					return err
+				}
+				result.Tags = append(result.Tags, dbTag)
+			}
 
 			// Connect tags and posts
-			_, err = q.CreatePostTag(ctx, dbi.CreatePostTagParams{
+			_, err = q.CreatePostTag(ctx, CreatePostTagParams{
 				PostID: result.Post.ID,
 				TagID:  dbTag.ID,
 			})
@@ -91,12 +104,12 @@ func (st Store) CreatePostTx(ctx context.Context, params CreatePostTxParams) (re
 				return err
 			}
 		}
-		return err
+		return nil
 	})
 
 	if err != nil {
 		return result, fmt.Errorf("unable to execute transaction: %v", err)
 	}
 
-	return
+	return result, err
 }

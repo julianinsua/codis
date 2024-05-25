@@ -5,16 +5,11 @@ import (
 	"fmt"
 	"log"
 
-	database "github.com/julianinsua/codis/database"
 	"github.com/julianinsua/codis/http"
+	"github.com/julianinsua/codis/internal/database"
 	"github.com/julianinsua/codis/util"
 
 	_ "github.com/lib/pq"
-)
-
-const (
-	DB_SOURCE = "postgres"
-	DB_URL    = "postgresql://postgres:password@localhost:5432/codis?sslmode=disable"
 )
 
 func main() {

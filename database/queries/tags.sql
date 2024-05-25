@@ -8,3 +8,8 @@ SELECT * FROM tags WHERE user_id=$1;
 
 -- name: GetTagById :one
 SELECT * FROM tags WHERE id=$1;
+
+-- name: UserTagExists :one
+SELECT *
+	FROM tags
+	WHERE user_id=$1 AND name=$2;

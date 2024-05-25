@@ -66,3 +66,21 @@ func (q *Queries) GetUserTags(ctx context.Context, userID uuid.UUID) ([]Tag, err
 	}
 	return items, nil
 }
+
+const userTagExists = `-- name: UserTagExists :one
+SELECT id, name, user_id
+	FROM tags
+	WHERE user_id=$1 AND name=$2
+`
+
+type UserTagExistsParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Name   string    `json:"name"`
+}
+
+func (q *Queries) UserTagExists(ctx context.Context, arg UserTagExistsParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, userTagExists, arg.UserID, arg.Name)
+	var i Tag
+	err := row.Scan(&i.ID, &i.Name, &i.UserID)
+	return i, err
+}

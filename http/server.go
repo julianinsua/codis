@@ -12,7 +12,8 @@ import (
 	"github.com/eknkc/amber"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	db "github.com/julianinsua/codis/database"
+
+	"github.com/julianinsua/codis/internal/database"
 	"github.com/julianinsua/codis/util"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
@@ -28,7 +29,7 @@ const (
 )
 
 type Server struct {
-	store     *db.Store
+	store     *database.SQLStore
 	router    chi.Router
 	templates map[string]*template.Template
 	mdParser  MdConverter
@@ -88,7 +89,7 @@ func (srv *Server) serveStaticContent() {
 	srv.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 }
 
-func NewServer(store *db.Store, mdParser MdConverter, config util.Config) *Server {
+func NewServer(store *database.SQLStore, mdParser MdConverter, config util.Config) *Server {
 	router := chi.NewRouter()
 
 	return &Server{router: router, store: store, mdParser: mdParser, config: config}
