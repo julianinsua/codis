@@ -11,7 +11,7 @@ import (
 )
 
 func CreateRandomTag(t *testing.T) Tag {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	params := CreateTagParams{
 		Name:   util.RandomString(6),
@@ -32,7 +32,7 @@ func TestCreateTag(t *testing.T) {
 }
 
 func TestGetUserTags(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	params1 := CreateTagParams{
 		Name:   util.RandomString(6),
@@ -68,7 +68,7 @@ func TestGetTagById(t *testing.T) {
 }
 
 func TestGetPostsWithTags(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 	tagParams := CreateTagParams{
 		Name:   util.RandomString(6),
 		UserID: usr.ID,

@@ -10,10 +10,6 @@ import (
 
 const uploadPath = "../markdown"
 
-type FileManager interface {
-	SaveFile(file multipart.File, filename string) (string, error)
-	GetFile(filename string) ([]byte, error)
-}
 type LocalFileManager struct {
 }
 

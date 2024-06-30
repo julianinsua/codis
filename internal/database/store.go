@@ -64,7 +64,7 @@ func (st SQLStore) CreatePostTx(ctx context.Context, params CreatePostTxParams) 
 		result.Post, err = q.CreatePost(ctx, CreatePostParams{
 			Title:       params.Title,
 			Description: params.Description,
-			Status:      sql.NullString{},
+			Status:      params.Status,
 			UserID:      params.UserID,
 			Path:        params.Path,
 		})

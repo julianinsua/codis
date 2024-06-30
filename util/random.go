@@ -1,10 +1,15 @@
 package util
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/julianinsua/codis/internal/database"
 )
 
 const (
@@ -39,4 +44,24 @@ func RandomUsername() string {
 // Returns a random email account using random characters for both the user and the domain. The suffix is ".com" by default.
 func RandomEmail() string {
 	return fmt.Sprintf("%s@%s.com", RandomString(6), RandomString(6))
+}
+
+func RandomPassword() string {
+	return RandomString(8)
+}
+
+func RandomUser() (database.User, string, error) {
+	pass := RandomPassword()
+	hash, err := HashPassword(pass)
+	if err != nil {
+		return database.User{}, "", err
+	}
+	return database.User{
+		ID:        uuid.New(),
+		Username:  RandomUsername(),
+		Password:  hash,
+		Email:     RandomEmail(),
+		CreatedAt: sql.NullTime{Time: time.Now(), Valid: true},
+		UpdatedAt: sql.NullTime{Time: time.Now(), Valid: true},
+	}, pass, nil
 }

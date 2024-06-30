@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomUser(t *testing.T) User {
+func CreateRandomUser(t *testing.T) User {
 	hash, err := util.HashPassword(util.RandomString(6))
 	require.NoError(t, err)
 	params := CreateUserParams{
@@ -31,11 +31,11 @@ func createRandomUser(t *testing.T) User {
 }
 
 func TestCreateUser(t *testing.T) {
-	createRandomUser(t)
+	CreateRandomUser(t)
 }
 
 func TestGetuserByID(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	dbUsr, err := testQueries.GetUserByID(context.Background(), usr.ID)
 

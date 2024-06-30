@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreatePost(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	createPostParams := CreatePostParams{
 		Title: "Test",
@@ -34,7 +34,7 @@ func TestCreatePost(t *testing.T) {
 }
 
 func TestGetPost(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	createPostParams := CreatePostParams{
 		Title: "Test",
@@ -59,7 +59,7 @@ func TestGetPost(t *testing.T) {
 }
 
 func TestGetPosts(t *testing.T) {
-	usr := createRandomUser(t)
+	usr := CreateRandomUser(t)
 
 	createPostParams1 := CreatePostParams{
 		Title: "Test",

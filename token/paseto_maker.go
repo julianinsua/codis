@@ -22,7 +22,7 @@ func NewPASETOMaker(symetricKey string) (PASETOMaker, error) {
 }
 
 // Creates a new PASETO V2 symetric token. Implements the Maker Interface
-func (mkr *PASETOMaker) CreateToken(username string, duration time.Duration) (string, *PASETOPayload, error) {
+func (mkr PASETOMaker) CreateToken(username string, duration time.Duration) (string, *PASETOPayload, error) {
 	payload, err := NewPASETOPayload(username, duration)
 	if err != nil {
 		return "", payload, err
@@ -32,7 +32,7 @@ func (mkr *PASETOMaker) CreateToken(username string, duration time.Duration) (st
 }
 
 // Verifies a token string using PASETO V2 Symetric encoding. Implements the Maker Interface.
-func (mkr *PASETOMaker) VerifyToken(token string) (*PASETOPayload, error) {
+func (mkr PASETOMaker) VerifyToken(token string) (*PASETOPayload, error) {
 	payload := &PASETOPayload{}
 
 	err := mkr.paseto.Decrypt(token, mkr.symetricKey, payload, nil)

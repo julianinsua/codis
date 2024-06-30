@@ -22,7 +22,10 @@ sqlc:
 serverrun:
 	go run main.go
 
-mock:
+mockDB:
 	mockgen --build_flags=--mod=mod -destination db/mock/store.go -package mock_db github.com/julianinsua/codis/internal/database Store
+
+mockTokenMaker:
+	mockgen --build_flags=--mod=mod -destination token/mock/token.go -package mock_token_mkr github.com/julianinsua/codis/token Maker
 
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc serverrun mock

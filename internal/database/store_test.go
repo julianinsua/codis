@@ -9,32 +9,39 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+type comparison struct {
+	Expected CreatePostTxParams
+	Result   CreatePostTxResult
+}
+
 func TestCreatePostTx(t *testing.T) {
 	store := NewStore(testDB)
-	user := createRandomUser(t)
+	user := CreateRandomUser(t)
 
 	errs := make(chan error)
-	txResults := make(chan CreatePostTxResult)
+	txResults := make(chan comparison)
 
 	n := 5
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := store.CreatePostTx(context.Background(), CreatePostTxParams{
+			params := CreatePostTxParams{
 				Title: util.RandomString(6),
 				Description: sql.NullString{
 					String: util.RandomString(12),
 					Valid:  true,
 				},
 				Status: sql.NullString{
-					String: util.RandomString(5),
+					String: "Published",
 					Valid:  true,
 				},
 				UserID:   user.ID,
-				Path:     "path/to/file", // TODO: Remove the path, it no longer makes sense
+				Path:     "path/to/file",
 				TagNames: []string{util.RandomString(5), util.RandomString(7), util.RandomString(9)},
-			})
+			}
+
+			result, err := store.CreatePostTx(context.Background(), params)
 			errs <- err
-			txResults <- result
+			txResults <- comparison{Expected: params, Result: result}
 		}()
 	}
 
@@ -44,7 +51,17 @@ func TestCreatePostTx(t *testing.T) {
 		require.NoError(t, err)
 		res := <-txResults
 		require.NotEmpty(t, res)
+		require.NotEmpty(t, res.Result)
+		require.NotEmpty(t, res.Expected)
 
-		// TODO: further checks here
+		require.Equal(t, res.Expected.Title, res.Result.Post.Title)
+		require.Equal(t, res.Expected.Description.String, res.Result.Post.Description.String)
+		require.Equal(t, res.Expected.Status.String, res.Result.Post.Status.String)
+		require.Equal(t, res.Expected.UserID, res.Result.Post.UserID)
+		require.Equal(t, res.Expected.Path, res.Result.Post.Path)
+
+		for _, tag := range res.Result.Tags {
+			require.Contains(t, res.Expected.TagNames, tag.Name)
+		}
 	}
 }

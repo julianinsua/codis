@@ -5,11 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/julianinsua/codis/internal/database"
 )
 
-func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request) {
+func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, user database.User) {
 	err := r.ParseMultipartForm(10 << 20) // 10 * 2^20
 	if err != nil {
 		log.Printf("unable to parse multipart form")
@@ -26,21 +25,21 @@ func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request) {
 	log.Printf("file received: %v", fileHeader.Filename)
 
 	// TODO: create a service on the server to store uploaded file
-	localFilename, err := srv.files.SaveFile(file, fileHeader.Filename)
+	storagePath, err := srv.files.SaveFile(file, fileHeader.Filename)
 	if err != nil {
 		log.Printf("error saving file: %v", err)
 	}
 
-	// TODO: filename is missing on DB
-	createPostParams := database.CreatePostParams{
-		Title:       "pepito",
-		Description: sql.NullString{String: "null this", Valid: true},
-		Status:      sql.NullString{String: "published", Valid: true},
-		UserID:      uuid.New(),
-		Path:        localFilename,
+	createPostParams := database.CreatePostTxParams{
+		Title:       "Title",
+		Description: sql.NullString{String: "Description", Valid: true},
+		Status:      sql.NullString{String: "Published", Valid: true},
+		UserID:      user.ID,
+		Path:        storagePath,
+		TagNames:    []string{"test_tag_1"},
 	}
 	// success: Create database entry
-	post, err := srv.store.Queries.CreatePost(r.Context(), createPostParams)
+	post, err := srv.store.CreatePostTx(r.Context(), createPostParams)
 	if err != nil {
 		log.Print(post)
 		log.Printf("sqlerror: %v", err)
