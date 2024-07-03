@@ -9,6 +9,7 @@ import (
 	"github.com/eknkc/amber"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/julianinsua/codis/internal/database"
 	"github.com/julianinsua/codis/token"
@@ -34,6 +35,7 @@ type Server struct {
 	files      FileManager
 	config     util.Config
 	tokenMaker token.Maker
+	validator  *validator.Validate
 }
 
 // Starts initiates the servers and listens to the preconfigured port.
@@ -43,6 +45,7 @@ func (srv *Server) Start() {
 	srv.serveStaticContent()
 	srv.setRoutes()
 	srv.setAuthorizedRoutes()
+	srv.initializeValidator()
 
 	server := &http.Server{
 		Handler: srv.router,
@@ -93,6 +96,10 @@ func (srv *Server) compileTemplates() {
 func (srv *Server) serveStaticContent() {
 	fs := http.FileServer(http.Dir("static"))
 	srv.router.Handle("/static/*", http.StripPrefix("/static/", fs))
+}
+
+func (srv *Server) initializeValidator() {
+	srv.validator = validator.New(validator.WithRequiredStructEnabled())
 }
 
 // NewServer creates a new server instance

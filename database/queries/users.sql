@@ -30,3 +30,6 @@ INSERT INTO sessions (
 UPDATE sessions
 	SET refresh_token =$2, client_agent=$3, client_ip=$4, expires_at=$5
 	WHERE id=$1 RETURNING *;
+
+-- name: GetUsersByemailOrUsername :many
+SELECT * FROM users WHERE email=$1 OR username=$2;

@@ -143,6 +143,45 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const getUsersByemailOrUsername = `-- name: GetUsersByemailOrUsername :many
+SELECT id, username, password, email, created_at, updated_at FROM users WHERE email=$1 OR username=$2
+`
+
+type GetUsersByemailOrUsernameParams struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) GetUsersByemailOrUsername(ctx context.Context, arg GetUsersByemailOrUsernameParams) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getUsersByemailOrUsername, arg.Email, arg.Username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.Password,
+			&i.Email,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateSession = `-- name: UpdateSession :one
 UPDATE sessions
 	SET refresh_token =$2, client_agent=$3, client_ip=$4, expires_at=$5

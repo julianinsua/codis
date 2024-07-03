@@ -31,7 +31,7 @@ type loginTestCase struct {
 }
 
 func TestHanldeLogin(t *testing.T) {
-	usr, pass, err := util.RandomUser()
+	usr, pass, err := database.RandomUser()
 	session := database.Session{
 		ID:           uuid.New(),
 		UserID:       usr.ID,
@@ -179,11 +179,7 @@ func TestHanldeLogin(t *testing.T) {
 			config, err := util.LoadConfig("..")
 			require.NoError(t, err)
 
-			parser := parser.NewMdParser() // TODO: Create a test MdParser (stub) (not being used)
-
-			// tokenMaker, err := token.NewPASETOMaker(config.SymetricKey)
-			require.NoError(t, err)
-
+			parser := parser.NewMdParser()                                  // TODO: Create a test MdParser (stub) (not being used)
 			fileManager := files.NewLocalFileManager(config.UploadFilePath) // TODO: Create a test file manager (stub) (not being used)
 
 			server := NewServer(store, parser, config, mkr, fileManager)
@@ -226,7 +222,7 @@ type resolveSessionTestCase struct {
 }
 
 func TestResolveSession(t *testing.T) {
-	usr, _, err := util.RandomUser()
+	usr, _, err := database.RandomUser()
 	require.NoError(t, err)
 	expiredSession := database.Session{
 		ID:           uuid.New(),
