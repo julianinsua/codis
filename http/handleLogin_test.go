@@ -186,7 +186,7 @@ func TestHanldeLogin(t *testing.T) {
 			server.setRoutes()
 			server.setAuthorizedRoutes()
 			recorder := httptest.NewRecorder()
-			url := "/login"
+			url := "/api/login"
 
 			data, err := json.Marshal(tc.payload)
 			require.NoError(t, err)

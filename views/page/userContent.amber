@@ -1,0 +1,6 @@
+extends ../master
+
+block content
+	div
+		each $post in List
+			p #{$post.Title}

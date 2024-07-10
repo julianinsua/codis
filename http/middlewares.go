@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/julianinsua/codis/internal/database"
 	"github.com/julianinsua/codis/util"
 )
@@ -40,6 +41,20 @@ func (srv *Server) authorizedHandler(handler authHandler) http.HandlerFunc {
 			return
 		}
 
+		handler(w, r, usr)
+	}
+}
+
+type userHandler func(http.ResponseWriter, *http.Request, database.User)
+
+func (srv *Server) usernameHandler(handler userHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := chi.URLParam(r, "username")
+		usr, err := srv.store.GetUserByUsername(r.Context(), username)
+		if err != nil {
+			log.Printf("user not found")
+			return
+		}
 		handler(w, r, usr)
 	}
 }

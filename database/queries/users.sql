@@ -33,3 +33,6 @@ UPDATE sessions
 
 -- name: GetUsersByemailOrUsername :many
 SELECT * FROM users WHERE email=$1 OR username=$2;
+
+-- name: GetUserByUsername :one
+SELECT * FROM users WHERE username=$1;

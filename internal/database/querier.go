@@ -26,6 +26,7 @@ type Querier interface {
 	GetTagPosts(ctx context.Context, tagID uuid.UUID) ([]Post, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
+	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetUserTags(ctx context.Context, userID uuid.UUID) ([]Tag, error)
 	GetUsersByemailOrUsername(ctx context.Context, arg GetUsersByemailOrUsernameParams) ([]User, error)
 	UpdateSession(ctx context.Context, arg UpdateSessionParams) (Session, error)

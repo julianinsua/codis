@@ -72,10 +72,18 @@ func (srv *Server) setCORSHeaders() {
 
 func (srv *Server) setRoutes() {
 	srv.router.Get("/home", srv.handleHome)
-	srv.router.Get("/content", srv.handleArticleList)
-	srv.router.Get("/content/{articleName}", srv.handleArticle)
-	srv.router.Post("/login", srv.handleLogin)
-	srv.router.Post("/signup", srv.createUser)
+	srv.router.Route("/api", func(r chi.Router) {
+		r.Post("/login", srv.handleLogin)
+		r.Post("/signup", srv.createUser)
+	})
+	srv.router.Route("/content", func(r chi.Router) {
+		r.Get("/", srv.handleArticleList)
+		r.Get("/{articleName}", srv.handleArticle)
+	})
+	srv.router.Route("/{username}", func(r chi.Router) {
+		r.Get("/", srv.usernameHandler(srv.handleUserContent))
+		// r.Get("/{postname}", srv.usernameHandler(srv.handleUserContent))
+	})
 }
 
 func (srv *Server) setAuthorizedRoutes() {

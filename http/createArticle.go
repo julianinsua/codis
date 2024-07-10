@@ -8,7 +8,7 @@ import (
 	"github.com/julianinsua/codis/internal/database"
 )
 
-func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, user database.User) {
+func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, usr database.User) {
 	err := r.ParseMultipartForm(10 << 20) // 10 * 2^20
 	if err != nil {
 		log.Printf("unable to parse multipart form")
@@ -25,7 +25,8 @@ func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, u
 	log.Printf("file received: %v", fileHeader.Filename)
 
 	// TODO: create a service on the server to store uploaded file
-	storagePath, err := srv.files.SaveFile(file, fileHeader.Filename)
+	filename := usr.Username + fileHeader.Filename
+	storagePath, err := srv.files.SaveFile(file, filename)
 	if err != nil {
 		log.Printf("error saving file: %v", err)
 	}
@@ -34,7 +35,7 @@ func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, u
 		Title:       "Title",
 		Description: sql.NullString{String: "Description", Valid: true},
 		Status:      sql.NullString{String: "Published", Valid: true},
-		UserID:      user.ID,
+		UserID:      usr.ID,
 		Path:        storagePath,
 		TagNames:    []string{"test_tag_1"},
 	}

@@ -162,7 +162,7 @@ func TestCreateUser(t *testing.T) {
 		server.setRoutes()
 		server.setAuthorizedRoutes()
 		recorder := httptest.NewRecorder()
-		url := "/signup"
+		url := "/api/signup"
 
 		data, err := json.Marshal(tc.payload)
 		require.NoError(t, err)
