@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,9 +19,10 @@ func (srv *Server) handleArticleList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) handleArticle(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
 	articleName := chi.URLParam(r, "articleName")
 	matched := strings.Split(articleName, ".")[0]
-	mdArticle, err := srv.files.GetFile(matched)
+	mdArticle, err := srv.files.GetFile(fmt.Sprintf("/%v - %v", username, matched))
 	if err != nil {
 		log.Printf("unable to read markdown file: %s", err)
 		data := struct {
@@ -36,7 +38,7 @@ func (srv *Server) handleArticle(w http.ResponseWriter, r *http.Request) {
 
 	// Parse heading ids, parser auto id's in kebab-case all headings
 
-	htmlTempl, err := srv.mdParser.Convert(mdArticle)
+	htmlTempl, err := srv.mdParser.Convert(mdArticle, username)
 	if err != nil {
 		log.Printf("Error parsing MD: %v", err)
 	}

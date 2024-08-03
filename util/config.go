@@ -10,7 +10,7 @@ import (
 Stores the configuration for the application
 */
 type Config struct {
-	PORT                 string        `mapstructure:"PORT"`
+	PORT                 int           `mapstructure:"PORT"`
 	DBDriver             string        `mapstructure:"DB_DRIVER"`
 	DBSource             string        `mapstructure:"DB_SOURCE"`
 	ServerAddr           string        `mapstructure:"SERVER_ADDRESS"`

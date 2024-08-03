@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -56,6 +57,7 @@ func (srv *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(usr.ID)
 	refreshToken, expiration, err := ResolveSession(r.Context(), srv.store, srv.tokenMaker, usr.ID, usr.Username)
 	if err != nil {
 		respondWithError(w, 500, err.Error())
@@ -98,7 +100,7 @@ func ResolveSession(ctx context.Context, store database.Store, tokenMaker token.
 		}
 		session, err = store.CreateSession(ctx, params)
 		if err != nil {
-			return "", time.Time{}, fmt.Errorf("error while creating session")
+			return "", time.Time{}, fmt.Errorf("error while creating session %v", err)
 		}
 		expiration = session.ExpiresAt
 		return

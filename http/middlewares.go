@@ -35,7 +35,8 @@ func (srv *Server) authorizedHandler(handler authHandler) http.HandlerFunc {
 			return
 		}
 		// get user from DB using srv
-		usr, err := srv.store.GetUserByID(r.Context(), payload.ID)
+		log.Println(payload.ID.String())
+		usr, err := srv.store.GetUserByUsername(r.Context(), payload.Username)
 		if err != nil {
 			respondWithError(w, 401, "Unauthorized")
 			return

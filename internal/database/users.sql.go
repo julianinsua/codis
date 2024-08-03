@@ -88,11 +88,11 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getSessions = `-- name: GetSessions :one
-SELECT id, user_id, refresh_token, client_agent, client_ip, is_blocked, expires_at, created_at FROM sessions WHERE id=$1 LIMIT 1
+SELECT id, user_id, refresh_token, client_agent, client_ip, is_blocked, expires_at, created_at FROM sessions WHERE user_id=$1 LIMIT 1
 `
 
-func (q *Queries) GetSessions(ctx context.Context, id uuid.UUID) (Session, error) {
-	row := q.db.QueryRowContext(ctx, getSessions, id)
+func (q *Queries) GetSessions(ctx context.Context, userID uuid.UUID) (Session, error) {
+	row := q.db.QueryRowContext(ctx, getSessions, userID)
 	var i Session
 	err := row.Scan(
 		&i.ID,

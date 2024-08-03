@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"mime/multipart"
@@ -24,7 +25,7 @@ type FileManager interface {
 
 // Converter turns a read Markdown file into an HTMl template.
 type Converter interface {
-	Convert([]byte) (template.HTML, error)
+	Convert([]byte, string) (template.HTML, error)
 }
 
 type Server struct {
@@ -49,10 +50,9 @@ func (srv *Server) Start() {
 
 	server := &http.Server{
 		Handler: srv.router,
-		Addr:    srv.config.PORT,
+		Addr:    fmt.Sprintf(":%d", srv.config.PORT),
 	}
-
-	log.Printf("Server running on port :%v", srv.config.PORT)
+	log.Printf("Server running on port %v", srv.config.PORT)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
@@ -78,7 +78,7 @@ func (srv *Server) setRoutes() {
 	})
 	srv.router.Route("/content", func(r chi.Router) {
 		r.Get("/", srv.handleArticleList)
-		r.Get("/{articleName}", srv.handleArticle)
+		r.Get("/{username}/{articleName}", srv.handleArticle)
 	})
 	srv.router.Route("/{username}", func(r chi.Router) {
 		r.Get("/", srv.usernameHandler(srv.handleUserContent))

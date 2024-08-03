@@ -21,7 +21,7 @@ type Querier interface {
 	GetPosts(ctx context.Context, status sql.NullString) ([]Post, error)
 	// need to add ordering
 	GetPostsWithTags(ctx context.Context, userID uuid.UUID) ([]PostsView, error)
-	GetSessions(ctx context.Context, id uuid.UUID) (Session, error)
+	GetSessions(ctx context.Context, userID uuid.UUID) (Session, error)
 	GetTagById(ctx context.Context, id uuid.UUID) (Tag, error)
 	GetTagPosts(ctx context.Context, tagID uuid.UUID) ([]Post, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)

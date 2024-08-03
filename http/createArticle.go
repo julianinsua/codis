@@ -2,6 +2,7 @@ package http
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -25,7 +26,7 @@ func (srv *Server) handleCreateArticle(w http.ResponseWriter, r *http.Request, u
 	log.Printf("file received: %v", fileHeader.Filename)
 
 	// TODO: create a service on the server to store uploaded file
-	filename := usr.Username + fileHeader.Filename
+	filename := fmt.Sprintf("%v - %v", usr.Username, fileHeader.Filename)
 	storagePath, err := srv.files.SaveFile(file, filename)
 	if err != nil {
 		log.Printf("error saving file: %v", err)

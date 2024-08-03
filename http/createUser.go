@@ -8,6 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/julianinsua/codis/internal/database"
+	"github.com/julianinsua/codis/util"
 )
 
 type signupRequest struct {
@@ -52,10 +53,15 @@ func (srv Server) createUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, 422, "email or username already exists")
 		return
 	}
+
+	passHash, err := util.HashPassword(body.Password)
+	if err != nil {
+		respondWithError(w, 500, "error hashing password")
+	}
 	// Create User
 	usr, err := srv.store.CreateUser(r.Context(), database.CreateUserParams{
 		Username: body.Username,
-		Password: body.Password,
+		Password: passHash,
 		Email:    body.Email,
 	})
 	if err != nil {

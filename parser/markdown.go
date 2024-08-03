@@ -19,8 +19,9 @@ import (
 type MdParser struct {
 }
 
-func (mdp MdParser) Convert(mdFile []byte) (template.HTML, error) {
+func (mdp MdParser) Convert(mdFile []byte, username string) (template.HTML, error) {
 	var buffer bytes.Buffer
+
 	err := goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
